@@ -5,6 +5,7 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,6 +14,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.Locale;
+
+import static android.R.attr.left;
+import static com.sun.tools.doclint.Entity.le;
 
 /**
  * Created by FireStormers on 10/22/2017.
@@ -23,6 +27,7 @@ public class ProgramingROBOT20172018 extends LinearOpMode {
     private DistanceSensor sensorColorRange;
     private Servo servoTest;
     private ColorSensor sensorColor;
+    private DcMotor stormymotor;
 
     @Override
     public void runOpMode() {
@@ -30,6 +35,8 @@ public class ProgramingROBOT20172018 extends LinearOpMode {
         sensorColorRange = hardwareMap.get(DistanceSensor.class, "sensorColorRange");
         servoTest = hardwareMap.get(Servo.class, "servoTest");
         sensorColor = hardwareMap.get(ColorSensor.class, "sensorColorRange");
+        stormymotor = hardwareMap.get(DcMotor.class, "StormyMotor");
+        double motorpower = 0;
 
         //hsvValues
         float hsvValues[] ={0F, 0F, 0F};
@@ -42,6 +49,10 @@ public class ProgramingROBOT20172018 extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        //StormyMotor
+        stormymotor.setPower(0);
+        stormymotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -50,6 +61,11 @@ public class ProgramingROBOT20172018 extends LinearOpMode {
             telemetry.addData("Status", "Running");
             telemetry.update();
             telemetry.addData("Distance (cm)", sensorColorRange.getDistance(DistanceUnit.CM));
+
+
+            motorpower = -gamepad1.left_stick_y;
+            stormymotor.setPower(motorpower);
+            telemetry.addData("motorpower", "0.2f", motorpower);
 
             //Color sensor stuff
             Color.RGBToHSV((int) (sensorColor.red()),
